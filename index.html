@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LingoMatch | Eğlenceli Dil Öğrenme Dünyası</title>
+    <meta name="description" content="Kültürleri keşfet, anında sosyalleş ve kelimelerinle dünyayı yakala.">
+    <!-- Fontlar -->
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body data-theme="light">
+
+    </svg>
+
+    <div id="app-container">
+
+        <!-- Yükleme / Flash Ekranı -->
+        <section id="splash-view" class="view auth-wrapper active" style="background:#FFFFFF;">
+            <div class="auth-card text-center" style="border:none; background:transparent; box-shadow:none;">
+                <div style="color: var(--primary); margin-bottom: 1.5rem; display:flex; justify-content:center;">
+                    <svg class="floating-logo" viewBox="0 0 24 24" fill="none" stroke="#A855F7" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="width: 80px; height: 80px;">
+                        <path d="M10 5a2 2 0 1 1 4 0v7a2 2 0 1 1-4 0V5z"></path>
+                        <path d="M14 5a2 2 0 1 1 4 0v7a2 2 0 1 1-4 0V5z"></path>
+                        <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-4-2.5-4-2.5-2 .9-4 2.5S5 13 5 15a7 7 0 0 0 7 7z">
+                        </path>
+                        <circle cx="9" cy="15" r="1"></circle>
+                        <circle cx="15" cy="15" r="1"></circle>
+                    </svg>
+                </div>
+                <h1
+                    style="margin-bottom: 0.5rem; font-size:3.5rem; text-align:center; color: var(--primary); font-family: var(--font-heading); font-weight:900; letter-spacing:-1px;">
+                    LingoMatch</h1>
+                <p
+                    style="text-align:center; font-size:1.15rem; color: var(--text-muted); font-weight:500; margin-bottom: 2.5rem;">
+                    Kültürleri keşfet, aksanını geliştir ve dünyayla bağ kur.</p>
+                <div
+                    style="display:flex; flex-direction:column; gap:1rem; width:100%; max-width:280px; margin: 0 auto;">
+                    <button class="btn btn-3d primary full-width" data-target="login-view"
+                        style="font-size:1.15rem; padding:14px; background:var(--primary); box-shadow:0 6px 0 var(--primary-shadow);">Giriş
+                        Yap</button>
+                    <button class="btn btn-3d secondary full-width" id="btn-start-ob"
+                        style="font-size:1.15rem; padding:14px;">Hemen Başla</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Giriş Yap (Login) -->
+        <section id="login-view" class="view auth-wrapper hidden">
+            <div class="auth-card">
+                <h2 style="color: var(--primary);">Kaldığın Yerden Devam</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Kullanıcı Adı</label>
+                        <input type="text" id="login-username" required placeholder="LingoKahramani">
+                    </div>
+                    <div class="form-group">
+                        <label>Şifre</label>
+                        <input type="password" id="login-password" required placeholder="••••••••">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-3d primary full-width">Bağlan</button>
+                    </div>
+                </form>
+                <div class="switch-auth" style="margin-top:1.5rem;">Ana Menüye <button class="link-btn"
+                        data-target="splash-view">Geri Dön</button></div>
+            </div>
+        </section>
+
+        <!-- SÜPER İNTERAKTİF ONBOARDING (WIZARD) -->
+        <section id="onboarding-view" class="view hidden"
+            style="width: 100vw; height: 100vh; background: var(--bg-main); display: flex; flex-direction:column; justify-content:center; align-items:center;">
+
+            <div class="ob-header">
+                <button class="btn btn-icon btn-cancel-ob" id="btn-cancel-ob"><i class="ph ph-x"
+                        style="font-size:1.5rem;"></i></button>
+                <div class="progress-track">
+                    <div class="progress-fill" id="ob-progress" style="width: 25%;"></div>
+                </div>
+            </div>
+
+            <div class="ob-content">
+                <!-- Bukalemun ve Baloncuk -->
+                <div class="mascot-area">
+                    <svg class="mascot-svg">
+                        <use href="#icon-bunny"></use>
+                    </svg>
+                    <div class="mascot-bubble" id="ob-bubble-text">Lingo dünyasına hoş geldin! Puanlar seninle olsun.
+                        Hangi kültürdensin (Ana Dil)?</div>
+                </div>
+
+                <!-- Adım 1: Ana Dil -->
+                <div class="ob-step active" id="ob-step-1">
+                    <div class="card-grid">
+                        <div class="card-select active" data-val="🇹🇷 Türkçe">🇹🇷 Türkçe</div>
+                        <div class="card-select" data-val="🇬🇧 İngilizce">🇬🇧 İngilizce</div>
+                        <div class="card-select" data-val="🇪🇸 İspanyolca">🇪🇸 İspanyolca</div>
+                    </div>
+                </div>
+
+                <!-- Adım 2: Hedef Dil -->
+                <div class="ob-step hidden" id="ob-step-2">
+                    <div class="card-grid">
+                        <div class="card-select active" data-val="🇬🇧 İngilizce">🇬🇧 İngilizce</div>
+                        <div class="card-select" data-val="🇪🇸 İspanyolca">🇪🇸 İspanyolca</div>
+                        <div class="card-select" data-val="🇫🇷 Fransızca">🇫🇷 Fransızca</div>
+                        <div class="card-select" data-val="🇩🇪 Almanca">🇩🇪 Almanca</div>
+                    </div>
+                </div>
+
+                <!-- Adım 3: Seviye -->
+                <div class="ob-step hidden" id="ob-step-3">
+                    <div class="card-grid col-1">
+                        <div class="card-select active" data-val="Başlangıç (A1-A2)">🐣 Başlangıç (A1 - A2)</div>
+                        <div class="card-select" data-val="Orta (B1-B2)">🚀 Orta Düzey (B1 - B2)</div>
+                        <div class="card-select" data-val="İleri (C1-C2)">👑 Akıcı (C1 - C2)</div>
+                    </div>
+                </div>
+
+                <!-- Adım 4: Kullanıcı Adı & Hobi -->
+                <div class="ob-step hidden" id="ob-step-4">
+                    <div class="form-group">
+                        <label style="color:var(--text-dark);">Sana nasıl hitap edelim?</label>
+                        <input type="text" id="ob-username" placeholder="Örn: EfsaneKedi">
+                    </div>
+                    <div class="form-group" style="margin-top:1rem;">
+                        <label style="color:var(--text-dark);">İlgini en çok çeken konu?</label>
+                        <div class="card-grid">
+                            <div class="card-select ob-hobby-select active" data-val="Müzik">🎵 Müzik</div>
+                            <div class="card-select ob-hobby-select" data-val="Oyun">🎮 Oyun</div>
+                            <div class="card-select ob-hobby-select" data-val="Seyahat">✈️ Seyahat</div>
+                            <div class="card-select ob-hobby-select" data-val="Sinema">🎥 Sinema</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ob-footer">
+                    <button class="btn btn-3d primary full-width" id="btn-ob-next"
+                        style="font-size:1.2rem; padding: 18px;">GÖNDER GELSİN</button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ANA UYGULAMA (LİNGO KAMPÜSÜ) -->
+        <div id="main-app" class="hidden">
+            <!-- Sol Menü (Sidebar) -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-logo">
+                        <svg width="40" height="40" style="color: var(--primary);">
+                            <use href="#icon-bunny"></use>
+                        </svg>
+                        <span>LingoMatch</span>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <button class="nav-item active" data-target="feed-view">
+                        <i class="ph ph-sparkle"></i> Keşfet
+                    </button>
+                    <button class="nav-item" data-target="flashcards-view">
+                        <i class="ph ph-diamonds-four"></i> Hazinem
+                    </button>
+                    <button class="nav-item" data-target="match-view">
+                        <i class="ph ph-heart"></i> Eşleşmeler
+                    </button>
+                    <button class="nav-item" data-target="profile-view">
+                        <i class="ph ph-user-circle"></i> Profilim
+                    </button>
+
+                    <div style="flex:1;"></div>
+
+                    <button class="nav-item" id="btn-theme-toggle">
+                        <i class="ph-fill ph-moon"></i> <span>Gece Modu</span>
+                    </button>
+                    <button id="btn-logout" class="nav-item" style="color: var(--danger);">
+                        <i class="ph ph-sign-out"></i> Çıkış Yap
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- İçerik Alanı -->
+            <div class="content-wrapper">
+                <!-- Üst Bar -->
+                <header class="app-header">
+                    <form class="header-search" id="form-search">
+                        <button type="submit" style="color: var(--primary);"><i class="ph ph-magnifying-glass"
+                                style="font-size: 1.2rem; font-weight: bold;"></i></button>
+                        <input type="text" id="input-search" placeholder="Bir şeyler keşfet...">
+                    </form>
+                    <div class="user-profile">
+                        <div class="status-indicators">
+                            <div class="indicator-item streak glow-effect" title="Seri Ateşi">
+                                <i class="ph-fill ph-fire"></i> <span id="streak-count">2</span>
+                            </div>
+                            <div class="indicator-item xp glow-effect" title="Deneyim Puanı">
+                                <i class="ph-fill ph-lightning"></i> <span id="xp-count">120</span>
+                            </div>
+                            <div class="indicator-item gems glow-effect" title="Elmaslar">
+                                <i class="ph-fill ph-sketch-logo"></i> <span>50</span>
+                            </div>
+                        </div>
+                        <div
+                            style="width: 2px; height: 24px; background: var(--border-color); margin: 0 0.5rem; border-radius: 2px;">
+                        </div>
+                        <div class="avatar" id="header-avatar" style="border: 2px solid var(--border-color);">KU</div>
+                    </div>
+                </header>
+
+                <!-- Keşfet (Feed/Dashboard) -->
+                <section id="feed-view" class="main-view active">
+                    <div class="view-header">
+                        <h2>Keşfet </h2>
+                        <p>LingoMatch kampüsüne hoş geldin.</p>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h3>Canlı Akış</h3>
+                                <button id="btn-new-post" class="btn btn-3d primary"><i
+                                        class="ph-bold ph-paper-plane-tilt"></i> Gönder</button>
+                            </div>
+                            <div class="social-feed" id="social-feed"></div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h3>Günlük Görevler</h3>
+                                <i class="ph-fill ph-target" style="font-size: 1.5rem; color: var(--primary);"></i>
+                            </div>
+                            <div class="tasks-list" id="daily-tasks"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Flashcards (Kelime Hazinem) -->
+                <section id="flashcards-view" class="main-view hidden">
+                    <div class="view-header">
+                        <h2>Kelime Kartlarım</h2>
+                        <p>Kelimeleri çevirerek anlamlarını gör ve hafızana kazı!</p>
+                    </div>
+
+                    <div class="flashcards-grid" id="flashcards-container">
+                        <!-- JS Flashcards -->
+                    </div>
+                </section>
+
+                <!-- Eşleşmeler ve Sohbet -->
+                <section id="match-view" class="main-view hidden">
+                    <div class="view-header">
+                        <h2>Eşleşmeler</h2>
+                        <p>Sohbete başla.</p>
+                    </div>
+
+                    <div class="match-grid-container">
+                        <div class="match-list-view" id="match-list">
+                            <!-- JS Inject -->
+                        </div>
+
+                        <div class="chat-container">
+                            <div id="chat-empty-state" class="chat-empty">
+                                <svg width="100" height="100" style="color: var(--border-color); margin-bottom:1rem;">
+                                    <use href="#icon-bunny"></use>
+                                </svg>
+                                <p style="font-weight:600;">Sohbet başlatmak için soldan bir kültür elçisi seç!</p>
+                            </div>
+
+                            <div id="active-chat-wrapper" class="hidden"
+                                style="display:flex; flex-direction:column; height: 100%;">
+                                <header class="chat-header">
+                                    <div class="avatar" id="chat-partner-avatar"
+                                        style="width: 45px; height: 45px; background:var(--secondary); color:white;">MP
+                                    </div>
+                                    <div class="chat-partner-info">
+                                        <h3 id="chat-partner-name" style="color:var(--text-dark);">Maria P.</h3>
+                                    </div>
+                                    <button class="btn btn-3d btn-sticker-action" id="btn-sticker-toggle">
+                                        <i class="ph-fill ph-smiley-wink"></i>
+                                    </button>
+                                </header>
+
+                                <div id="sticker-panel" class="hidden sticker-panel">
+                                    <button class="sticker-btn"
+                                        data-gif="https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif">
+                                        <img src="https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif"
+                                            alt="Cat Heart">
+                                    </button>
+                                    <button class="sticker-btn"
+                                        data-gif="https://media.giphy.com/media/tsX3YHXWgNVbO/giphy.gif">
+                                        <img src="https://media.giphy.com/media/tsX3YHXWgNVbO/giphy.gif"
+                                            alt="Happy Dance">
+                                    </button>
+                                    <button class="sticker-btn"
+                                        data-gif="https://media.giphy.com/media/11sBLVxNs7v6WA/giphy.gif">
+                                        <img src="https://media.giphy.com/media/11sBLVxNs7v6WA/giphy.gif"
+                                            alt="Applause">
+                                    </button>
+                                </div>
+
+                                <div class="chat-messages" id="chat-messages">
+                                    <!-- Messages -->
+                                </div>
+                                <form class="chat-input-area" id="chat-form">
+                                    <input type="text" id="chat-input" placeholder="Süper bir mesaj gönder..."
+                                        autocomplete="off">
+                                    <button type="submit" class="btn btn-3d primary"><i
+                                            class="ph-bold ph-paper-plane-right"></i> İlet</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Profil ve İstatistikler -->
+                <section id="profile-view" class="main-view hidden">
+                    <div class="view-header">
+                        <h2>Profilim</h2>
+                        <p>Gelişim ağacın ve istatistiklerin.</p>
+                    </div>
+
+                    <div class="profile-layout">
+                        <div class="profile-sidebar">
+                            <div class="profile-card panel">
+                                <div class="avatar large profile-avatar" id="profile-avatar-large"
+                                    style="margin: 0 auto; background: var(--border-color); color: var(--primary);">KU
+                                </div>
+                                <h2 id="profile-username" style="margin-top:1rem; color:var(--text-dark);">Kullanıcı
+                                </h2>
+                                <div class="profile-tags" id="profile-tags-container">
+                                    <span class="tag">🇹🇷 Türkçe</span>
+                                    <span class="tag">🇬🇧 İngilizce</span>
+                                    <span class="tag"
+                                        style="background:var(--bg-main); color:var(--text-dark); border:2px solid var(--primary);"
+                                        id="tag-level">A1</span>
+                                    <span class="tag" style="background:var(--primary); color:white; border:none;"
+                                        id="tag-hobby">Oyun</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="profile-content">
+                            <div class="stats-grid">
+                                <div class="stat-card panel glow-card">
+                                    <i class="ph-fill ph-lightning stat-icon"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="stat-xp">120</span>
+                                        <span class="stat-label">Power (XP)</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card panel glow-card">
+                                    <i class="ph-fill ph-check-square-offset stat-icon"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="stat-tasks">0</span>
+                                        <span class="stat-label">Biten Görev</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card panel glow-card">
+                                    <i class="ph-fill ph-cards stat-icon"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="stat-cards">0</span>
+                                        <span class="stat-label">Stok Kelime</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel">
+                                <div class="panel-header">
+                                    <h3>Kazandığın Rozetler</h3>
+                                </div>
+                                <div class="badges-grid" id="badges-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Arama Sonuçları -->
+        <section id="search-view" class="main-view hidden"
+            style="position: absolute; top: 0; left: 280px; width: calc(100% - 280px); height: calc(100vh - 84px); margin-top: 84px; z-index: 50; background-color: var(--bg-main);">
+            <div class="view-header">
+                <h2 id="search-title" style="color: var(--primary);">Arama Sonuçları</h2>
+                <p>Aramana uyan sonuçlar listelendi.</p>
+            </div>
+            <div class="panel" style="text-align: center; padding: 4rem; border: dashed 2px var(--border-color);">
+                <svg width="80" height="80" style="color: var(--primary); margin-bottom: 1rem;">
+                    <use href="#icon-bunny"></use>
+                </svg>
+                <h3 style="font-size: 1.5rem;">Henüz Sonuç Yok</h3>
+                <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500;">Denediğin kelime veya görev şu
+                    an kampüste bulunamadı.</p>
+            </div>
+        </section>
+
+        <!-- YENİ GÖNDERİ MODAL -->
+        <div id="post-modal" class="modal hidden">
+            <div class="modal-content">
+                <header class="modal-header"
+                    style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="color:var(--primary);">Düşüncelerini Paylaş...</h3>
+                    <button class="close-modal btn btn-icon" style="padding:8px; border-radius:50%;"><i
+                            class="ph-bold ph-x"></i></button>
+                </header>
+                <form id="new-post-form">
+                    <div class="form-group">
+                        <textarea id="post-text" placeholder="Bugün neler hissettin?" rows="5" required
+                            style="resize:none;"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-3d primary full-width" style="padding:16px;">Paylaş
+                        gitsin!</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- LINGOLANDINIZ MODAL (EŞLEŞME KUTLAMASI & KONFETİ) -->
+        <div id="lingo-modal" class="modal hidden" style="background-color: var(--modal-overlay); z-index: 9999;">
+            <div id="confetti-container"
+                style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:hidden; z-index:1;">
+            </div>
+
+            <div class="modal-content lingo-celebration"
+                style="position:relative; z-index:10; border: 4px solid var(--primary); background: var(--bg-main); text-align: center; display: flex; flex-direction: column; align-items: center;">
+                <div class="bounce-in">
+                    <h1 class="lingo-title" style="color:var(--primary); font-size:3.5rem;">LİNGOLANDINIZ!</h1>
+                    <p
+                        style="text-align:center; color: var(--secondary); font-weight: 700; margin-bottom:2rem; font-size:1.1rem;">
+                        Harika bir dil eşleşmesi gerçekleşti. Bağlantı kur!</p>
+                </div>
+                <div class="avatar large pop-avatar" id="lingo-partner-avatar"
+                    style="border:4px solid var(--secondary); border-radius: 30px; margin: 0 auto;">MP</div>
+                <h3 id="lingo-partner-name"
+                    style="text-align:center; margin-top:1.5rem; margin-bottom:1.5rem; font-size:2rem; color:var(--text-dark);">
+                    Maria P.</h3>
+                <button id="btn-start-chat" class="btn btn-3d primary full-width bounce-in"
+                    style="font-size:1.2rem; padding: 18px;">Sohbete Işınlan</button>
+            </div>
+        </div>
+
+        <!-- OYUNLAŞTIRMA BİLDİRİMİ -->
+        <div id="toast-notification" class="toast hidden">
+            <div class="toast-icon"><i class="ph-fill ph-check-circle" style="color:white; font-size: 2rem;"></i></div>
+            <div class="toast-body">
+                <h4 id="toast-title" style="margin-bottom:0.2rem;">Süper Başarı</h4>
+                <p id="toast-message" style="font-weight:600; font-size:1rem;">+20 XP Hesaba Yüklendi!</p>
+            </div>
+        </div>
+
+    </div>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
