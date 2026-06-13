@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LingoMatch | Eğlenceli Dil Öğrenme Dünyası</title>
+    <meta name="description" content="Kültürleri keşfet, anında sosyalleş ve kelimelerinle dünyayı yakala.">
+    <!-- Fontlar -->
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body data-theme="light">
+
+    <div id="app-container">
+
+        <!-- Yükleme / Flash Ekranı -->
+        <section id="splash-view" class="view auth-wrapper active" style="background:#FFFFFF;">
+            <div class="auth-card text-center" style="border:none; background:transparent; box-shadow:none;">
+                <h1 style="margin-bottom: 0.5rem; font-size:3.5rem; text-align:center; color: var(--primary); font-family: 'Inter', sans-serif; font-weight:800; letter-spacing:-1px;">
+                    LingoMatch</h1>
+                <p
+                    style="text-align:center; font-size:1.15rem; color: var(--text-muted); font-weight:500; margin-bottom: 2.5rem;">
+                    Kültürleri keşfet, aksanını geliştir ve dünyayla bağ kur.</p>
+                <div
+                    style="display:flex; flex-direction:column; gap:1rem; width:100%; max-width:280px; margin: 0 auto;">
+                    <button class="btn btn-3d primary full-width" data-target="login-view"
+                        style="font-size:1.15rem; padding:14px; background:var(--primary); box-shadow:0 6px 0 var(--primary-shadow);">Giriş
+                        Yap</button>
+                    <button class="btn btn-3d secondary full-width" id="btn-start-ob"
+                        style="font-size:1.15rem; padding:14px;">Hemen Başla</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Giriş Yap (Login) -->
+        <section id="login-view" class="view auth-wrapper hidden">
+            <div class="auth-card">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Kullanıcı Adı</label>
+                        <input type="text" id="login-username" required placeholder="Kullanıcı Adı">
+                    </div>
+                    <div class="form-group">
+                        <label>Şifre</label>
+                        <input type="password" id="login-password" required placeholder="••••••••">
+                        <div style="display:flex; justify-content:flex-end; margin-top:0.5rem; margin-bottom: 0.5rem;">
+                            <button type="button" id="btn-forgot-password" class="link-btn" style="font-size:0.85rem; font-weight:800; cursor:pointer; background:none; border:none; padding:0;">Şifremi Unuttum</button>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-3d primary full-width">GİRİŞ YAP</button>
+                    </div>
+                </form>
+                <div class="switch-auth" style="margin-top:1.5rem;">Ana Menüye <button class="link-btn"
+                        data-target="splash-view">Geri Dön</button></div>
+            </div>
+        </section>
+
+        <!-- SÜPER İNTERAKTİF ONBOARDING (WIZARD) -->
+        <section id="onboarding-view" class="view hidden"
+            style="width: 100vw; height: 100vh; background: var(--bg-main); display: flex; flex-direction:column; justify-content:center; align-items:center;">
+
+            <div class="ob-header">
+                <button class="btn btn-icon btn-cancel-ob" id="btn-cancel-ob"><i class="ph ph-x"
+                        style="font-size:1.5rem;"></i></button>
+                <div class="progress-track">
+                    <div class="progress-fill" id="ob-progress" style="width: 25%;"></div>
+                </div>
+            </div>
+
+            <div class="ob-content">
+                <div class="mascot-area">
+                    <div class="mascot-bubble" id="ob-bubble-text" style="width: 100%; text-align: center; border-radius: var(--radius-lg);">Lingo dünyasına hoş geldin! Puanlar seninle olsun. Hangi kültürdensin (Ana Dil)?</div>
+                </div>
+
+                <!-- Adım 1: Ana Dil -->
+                <div class="ob-step active" id="ob-step-1">
+                    <div class="card-grid">
+                        <div class="card-select active" data-val="🇹🇷 Türkçe">🇹🇷 Türkçe</div>
+                        <div class="card-select" data-val="🇬🇧 İngilizce">🇬🇧 İngilizce</div>
+                        <div class="card-select" data-val="🇪🇸 İspanyolca">🇪🇸 İspanyolca</div>
+                    </div>
+                </div>
+
+                <!-- Adım 2: Hedef Dil -->
+                <div class="ob-step hidden" id="ob-step-2">
+                    <div class="card-grid">
+                        <div class="card-select active" data-val="🇬🇧 İngilizce">🇬🇧 İngilizce</div>
+                        <div class="card-select" data-val="🇪🇸 İspanyolca">🇪🇸 İspanyolca</div>
+                        <div class="card-select" data-val="🇫🇷 Fransızca">🇫🇷 Fransızca</div>
+                        <div class="card-select" data-val="🇩🇪 Almanca">🇩🇪 Almanca</div>
+                    </div>
+                </div>
+
+                <!-- Adım 3: Seviye -->
+                <div class="ob-step hidden" id="ob-step-3">
+                    <div class="card-grid col-1">
+                        <div class="card-select active" data-val="Başlangıç (A1-A2)">🐣 Başlangıç (A1 - A2)</div>
+                        <div class="card-select" data-val="Orta (B1-B2)">🚀 Orta Düzey (B1 - B2)</div>
+                        <div class="card-select" data-val="İleri (C1-C2)">👑 Akıcı (C1 - C2)</div>
+                    </div>
+                </div>
+
+                <!-- Adım 4: Kullanıcı Adı & Hobi -->
+                <div class="ob-step hidden" id="ob-step-4">
+                    <div class="form-group">
+                        <label style="color:var(--text-dark);">Sana nasıl hitap edelim?</label>
+                        <input type="text" id="ob-username" placeholder="Örn: EfsaneKedi">
+                    </div>
+                    <div class="form-group" style="margin-top:1rem;">
+                        <label style="color:var(--text-dark);">İlgini en çok çeken konu?</label>
+                        <div class="card-grid">
+                            <div class="card-select ob-hobby-select active" data-val="Müzik">🎵 Müzik</div>
+                            <div class="card-select ob-hobby-select" data-val="Oyun">🎮 Oyun</div>
+                            <div class="card-select ob-hobby-select" data-val="Seyahat">✈️ Seyahat</div>
+                            <div class="card-select ob-hobby-select" data-val="Sinema">🎥 Sinema</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ob-footer">
+                    <button class="btn btn-3d primary full-width" id="btn-ob-next"
+                        style="font-size:1.2rem; padding: 18px;">GÖNDER GELSİN</button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ANA UYGULAMA (LİNGO KAMPÜSÜ) -->
+        <div id="main-app" class="hidden">
+            <!-- Sol Menü (Sidebar) -->
+            <aside class="sidebar" id="main-sidebar">
+                <div class="sidebar-header" style="justify-content: center; display: flex; padding: 2.5rem 1.5rem;">
+                    <div class="sidebar-logo">
+                        <span style="font-family: 'Inter', sans-serif; font-weight: 800; font-size: 2rem;">LingoMatch</span>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <button class="nav-item active" data-target="feed-view">
+                        <i class="ph ph-sparkle"></i> Keşfet
+                    </button>
+                    <button class="nav-item" data-target="flashcards-view">
+                        <i class="ph ph-diamonds-four"></i> Hazinem
+                    </button>
+                    <button class="nav-item" data-target="match-view">
+                        <i class="ph ph-heart"></i> Eşleşmeler
+                    </button>
+                    <button class="nav-item" data-target="profile-view">
+                        <i class="ph ph-user-circle"></i> Profilim
+                    </button>
+                    <button class="nav-item" data-target="settings-view">
+                        <i class="ph ph-gear"></i> Ayarlar
+                    </button>
+                    <button class="nav-item" data-target="quiz-view">
+                        <i class="ph ph-game-controller"></i> Quiz
+                    </button>
+
+                    <div style="flex:1;"></div>
+
+                    <button class="nav-item" id="btn-theme-toggle">
+                        <i class="ph-fill ph-moon"></i> <span>Gece Modu</span>
+                    </button>
+                    <button id="btn-logout" class="nav-item" style="color: var(--danger);">
+                        <i class="ph ph-sign-out"></i> Çıkış Yap
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- Sidebar Overlay (Hamburger menü arka planı) -->
+            <div class="sidebar-overlay hidden" id="sidebar-overlay"></div>
+
+            <!-- İçerik Alanı -->
+            <div class="content-wrapper">
+                <!-- Üst Bar -->
+                <header class="app-header" style="justify-content: space-between;">
+                    <!-- Sol: Hamburger + LingoMatch Logo -->
+                    <div style="display:flex; align-items:center; gap: 0.75rem;">
+                        <button id="btn-hamburger" aria-label="Menüyü Aç" style="background:none; border:none; cursor:pointer; padding:8px; border-radius:8px; color:var(--text-dark); font-size:1.6rem; display:flex; align-items:center; transition:color 0.2s;">
+                            <i class="ph-bold ph-list"></i>
+                        </button>
+                        <button data-target="feed-view" style="background:none; border:none; cursor:pointer; font-family:'Inter',sans-serif; font-weight:800; font-size:1.4rem; color:var(--primary); letter-spacing:-0.5px; padding:0;">
+                            LingoMatch
+                        </button>
+                    </div>
+
+                    <!-- Orta: Arama -->
+                    <form class="header-search" id="form-search">
+                        <button type="submit" style="color: var(--primary); background:none; border:none; cursor:pointer; display:flex; align-items:center;"><i class="ph ph-magnifying-glass" style="font-size: 1.1rem;"></i></button>
+                        <input type="text" id="input-search" placeholder="LingoMatch'te Ara">
+                    </form>
+
+                    <!-- Sağ: XP + Avatar -->
+                    <div class="user-profile">
+                        <div class="status-indicators">
+                            <div class="indicator-item streak glow-effect" title="Seri Ateşi">
+                                <i class="ph-fill ph-fire"></i> <span id="streak-count">2</span>
+                            </div>
+                            <div class="indicator-item xp glow-effect" title="Deneyim Puanı">
+                                <i class="ph-fill ph-lightning"></i> <span id="xp-count">120</span>
+                            </div>
+                            <div class="indicator-item gems glow-effect" title="Elmaslar">
+                                <i class="ph-fill ph-sketch-logo"></i> <span>50</span>
+                            </div>
+                        </div>
+                        <div style="width: 2px; height: 24px; background: var(--border-color); margin: 0 0.5rem; border-radius: 2px;"></div>
+                        <div class="avatar" id="header-avatar" title="Profilime git" style="border: 2px solid var(--border-color); cursor:pointer;">KU</div>
+                    </div>
+                </header>
+
+                <!-- Keşfet (Feed/Dashboard) -->
+                <section id="feed-view" class="main-view active">
+                    <div class="dashboard-grid">
+                        <div class="panel" style="border-radius: 16px; position: relative;">
+                            <div class="social-feed" id="social-feed"></div>
+                            <!-- Floating Action Button -->
+                            <button id="btn-new-post" class="fab-btn" title="Yeni Gönder" aria-label="Yeni gönder">
+                                <i class="ph-bold ph-plus"></i>
+                            </button>
+                        </div>
+                        <div class="panel" style="border-radius: 16px;">
+                            <div class="panel-header" style="padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom:1rem;">
+                                <h3 style="font-weight:700; font-size:1.1rem;">Günlük Görevler</h3>
+                                <i class="ph-fill ph-target" style="font-size: 1.4rem; color: var(--primary);"></i>
+                            </div>
+                            <div class="tasks-list" id="daily-tasks"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Flashcards (Kelime Hazinem) -->
+                <section id="flashcards-view" class="main-view hidden">
+                    <div class="view-header">
+                        <h2>Kelime Kartlarım</h2>
+                        <p>Kelimeleri çevirerek anlamlarını gör ve hafızana kazı!</p>
+                    </div>
+
+                    <div class="flashcards-grid" id="flashcards-container">
+                        <!-- JS Flashcards -->
+                    </div>
+                </section>
+
+                <!-- Eşleşmeler ve Sohbet -->
+                <section id="match-view" class="main-view hidden">
+                    <div class="view-header">
+                        <h2>Eşleşmeler</h2>
+                        <p>Sohbete başla.</p>
+                    </div>
+
+                    <div class="match-grid-container">
+                        <div class="match-list-view" id="match-list">
+                            <!-- JS Inject -->
+                        </div>
+
+                        <div class="chat-container">
+                            <div id="chat-empty-state" class="chat-empty">
+                                <p style="font-weight:600; font-size: 1.1rem;">Sohbet başlatmak için soldan bir kültür elçisi seç!</p>
+                            </div>
+
+                            <div id="active-chat-wrapper" class="hidden"
+                                style="display:flex; flex-direction:column; height: 100%;">
+                                <header class="chat-header">
+                                    <div class="avatar" id="chat-partner-avatar"
+                                        style="width: 45px; height: 45px; background:var(--secondary); color:white;">MP
+                                    </div>
+                                    <div class="chat-partner-info">
+                                        <h3 id="chat-partner-name" style="color:var(--text-dark);">Maria P.</h3>
+                                    </div>
+                                    <button class="btn btn-3d btn-sticker-action" id="btn-sticker-toggle">
+                                        <i class="ph-fill ph-smiley-wink"></i>
+                                    </button>
+                                </header>
+
+                                <div id="sticker-panel" class="hidden sticker-panel">
+                                    <button class="sticker-btn"
+                                        data-gif="https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif">
+                                        <img src="https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif"
+                                            alt="Cat Heart">
+                                    </button>
+                                    <button class="sticker-btn"
+                                        data-gif="https://media.giphy.com/media/tsX3YHXWgNVbO/giphy.gif">
+                                        <img src="https://media.giphy.com/media/tsX3YHXWgNVbO/giphy.gif"
+                                            alt="Happy Dance">
+                                    </button>
+                                    <button class="sticker-btn"
+                                        data-gif="https://media.giphy.com/media/11sBLVxNs7v6WA/giphy.gif">
+                                        <img src="https://media.giphy.com/media/11sBLVxNs7v6WA/giphy.gif"
+                                            alt="Applause">
+                                    </button>
+                                </div>
+
+                                <div class="chat-messages" id="chat-messages">
+                                    <!-- Messages -->
+                                </div>
+                                <form class="chat-input-area" id="chat-form">
+                                    <input type="text" id="chat-input" placeholder="Süper bir mesaj gönder..."
+                                        autocomplete="off">
+                                    <button type="submit" class="btn btn-3d primary"><i
+                                            class="ph-bold ph-paper-plane-right"></i> İlet</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Profil ve İstatistikler -->
+                <section id="profile-view" class="main-view hidden">
+                    <div class="view-header">
+                        <h2>Profilim</h2>
+                        <p>Gelişim ağacın ve istatistiklerin.</p>
+                    </div>
+
+                    <div class="profile-layout">
+                        <div class="profile-sidebar">
+                            <div class="profile-card panel">
+                                <div class="avatar large profile-avatar" id="profile-avatar-large"
+                                    style="margin: 0 auto; background: var(--border-color); color: var(--primary);">KU
+                                </div>
+                                <h2 id="profile-username" style="margin-top:1rem; color:var(--text-dark);">Kullanıcı
+                                </h2>
+                                <div class="profile-tags" id="profile-tags-container">
+                                    <span class="tag">🇹🇷 Türkçe</span>
+                                    <span class="tag">🇬🇧 İngilizce</span>
+                                    <span class="tag"
+                                        style="background:var(--bg-main); color:var(--text-dark); border:2px solid var(--primary);"
+                                        id="tag-level">A1</span>
+                                    <span class="tag" style="background:var(--primary); color:white; border:none;"
+                                        id="tag-hobby">Oyun</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="profile-content">
+                            <div class="stats-grid">
+                                <div class="stat-card panel glow-card">
+                                    <i class="ph-fill ph-lightning stat-icon"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="stat-xp">120</span>
+                                        <span class="stat-label">Power (XP)</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card panel glow-card">
+                                    <i class="ph-fill ph-check-square-offset stat-icon"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="stat-tasks">0</span>
+                                        <span class="stat-label">Biten Görev</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card panel glow-card">
+                                    <i class="ph-fill ph-cards stat-icon"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="stat-cards">0</span>
+                                        <span class="stat-label">Stok Kelime</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel">
+                                <div class="panel-header">
+                                    <h3>Kazandığın Rozetler</h3>
+                                </div>
+                                <div class="badges-grid" id="badges-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Ayarlar -->
+                <section id="settings-view" class="main-view hidden bounce-in">
+                    <div class="view-header">
+                        <h2>Ayarlar</h2>
+                        <p>Deneyimini sana özel şekillendir.</p>
+                    </div>
+
+                    <div class="settings-grid" style="display:flex; flex-direction:column; gap:1.25rem;">
+                        <div class="panel">
+                            <div class="panel-header" style="margin-bottom: 1.5rem;">
+                                <h3>Dil Tercihleri</h3>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="color:var(--text-dark); font-weight:600;">Öğrenilen Dil</label>
+                                <select class="settings-select" style="width:100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-main); color: var(--text-dark); font-family:var(--font-body); font-weight: 600; font-size:1.05rem; outline:none; transition: all var(--transition-fast); cursor:pointer;">
+                                    <option value="en" selected>🇬🇧 İngilizce</option>
+                                    <option value="es">🇪🇸 İspanyolca</option>
+                                    <option value="fr">🇫🇷 Fransızca</option>
+                                    <option value="de">🇩🇪 Almanca</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label style="color:var(--text-dark); font-weight:600;">Ana Dil</label>
+                                <select class="settings-select" style="width:100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-main); color: var(--text-dark); font-family:var(--font-body); font-weight: 600; font-size:1.05rem; outline:none; transition: all var(--transition-fast); cursor:pointer;">
+                                    <option value="tr" selected>🇹🇷 Türkçe</option>
+                                    <option value="en">🇬🇧 İngilizce</option>
+                                    <option value="es">🇪🇸 İspanyolca</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-header" style="margin-bottom: 1.5rem;">
+                                <h3>Bildirim Ayarları</h3>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--border-color);">
+                                <div style="font-weight:700; color:var(--text-dark); font-size:1.05rem;">Yeni Mesajlar</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-weight:700; color:var(--text-dark); font-size:1.05rem;">Günlük Görev Hatırlatıcıları</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-header" style="margin-bottom: 1.5rem;">
+                                <h3>Öğrenme Yoğunluğu</h3>
+                                <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 500; margin-top: 0.2rem;">Günlük hedefini belirle</p>
+                            </div>
+                            <div class="intensity-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                                <button class="intensity-btn">5 dk (Gezgin)</button>
+                                <button class="intensity-btn active">15 dk (Öğrenci)</button>
+                                <button class="intensity-btn">30 dk (Usta)</button>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-header" style="margin-bottom: 1.5rem;">
+                                <h3>Ses Ayarları</h3>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap: 1rem;">
+                                <div style="display:flex; justify-content:space-between; font-weight:600; color:var(--text-dark);">
+                                    <span>Telaffuz Hızı</span>
+                                    <span style="color:var(--primary);">Normal</span>
+                                </div>
+                                <input type="range" min="0.5" max="1.5" step="0.1" value="1.0" class="voice-slider" style="width: 100%; accent-color: var(--primary);">
+                                <div style="display:flex; justify-content:space-between; font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
+                                    <span>Yavaş</span>
+                                    <span>Hızlı</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-header" style="margin-bottom: 1.5rem;">
+                                <h3>Erişilebilirlik & Gizlilik</h3>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--border-color);">
+                                <div style="font-weight:700; color:var(--text-dark); font-size:1.05rem;">Yüksek Kontrast Modu</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-high-contrast">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-weight:700; color:var(--text-dark); font-size:1.05rem;">Profilimi Diğerlerine Göster</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 1rem; text-align: center;">
+                            <button id="btn-clear-data" class="clear-data-btn">Verilerimi Temizle</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quiz Dünyası -->
+                <section id="quiz-view" class="main-view hidden">
+                    <!-- Quiz Seçim Paneli -->
+                    <div id="quiz-selection-panel" class="bounce-in">
+                        <div class="view-header" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem;">
+                            <div>
+                                <h2>LingoMatch Quiz</h2>
+                                <p style="margin-bottom: 0.75rem;">Dil becerilerini test et ve dinamik zorluk algoritmasıyla seviye atla!</p>
+                                <button id="btn-quiz-evaluate" class="btn btn-3d primary" style="font-size:0.8rem; padding:8px 16px; text-transform:none; margin:0;">
+                                    <i class="ph-bold ph-clipboard-text"></i> Seviye Analizi
+                                </button>
+                            </div>
+                            <div class="quiz-user-status panel" style="padding:0.75rem 1.5rem; display:flex; align-items:center; gap:1.5rem; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); margin-bottom: 0.5rem;">
+                                <div style="display:flex; align-items:center; gap:0.4rem; font-weight:800; color:var(--text-dark);">
+                                    <i class="ph-fill ph-lightning" style="color:var(--primary); font-size:1.4rem;"></i>
+                                    <span id="quiz-status-xp">120 XP</span>
+                                </div>
+                                <div style="width:2px; height:20px; background:var(--border-color);"></div>
+                                <div style="display:flex; align-items:center; gap:0.4rem; font-weight:800; color:white; background:var(--primary); padding:4px 12px; border-radius:var(--radius-pill); box-shadow: 0 2px 0 var(--primary-shadow);">
+                                    <span id="quiz-status-level">B1</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:2rem; margin-top:1.5rem;">
+                            <!-- Kart 1: Kelime Dağarcığı -->
+                            <div class="quiz-select-card panel hover-lift" data-category="vocab">
+                                <div>
+                                    <div style="width:50px; height:50px; border-radius:var(--radius-sm); background:rgba(0,119,182,0.1); color:var(--primary); display:flex; align-items:center; justify-content:center; margin-bottom:1.25rem;">
+                                        <i class="ph-fill ph-book-open" style="font-size:1.8rem;"></i>
+                                    </div>
+                                    <h3 style="font-size:1.3rem; margin-bottom:0.5rem; color:var(--text-dark);">Kelime Dağarcığı</h3>
+                                    <p style="color:var(--text-muted); font-size:0.95rem; font-weight:500; line-height:1.4;">Yeni kelimeler öğren, eş anlamlıları eşleştir ve kelime hazineni genişlet.</p>
+                                </div>
+                                <div class="quiz-card-footer">
+                                    <span class="quiz-difficulty-badge tag" style="font-size:0.8rem; padding:4px 10px; font-weight:800; background:var(--accent);">YÜKLENİYOR...</span>
+                                    <button class="btn btn-3d primary" style="font-size:0.8rem; padding:8px 16px; text-transform:none; margin:0;">Başla</button>
+                                </div>
+                            </div>
+
+                            <!-- Kart 2: Dil Bilgisi -->
+                            <div class="quiz-select-card panel hover-lift" data-category="grammar">
+                                <div>
+                                    <div style="width:50px; height:50px; border-radius:var(--radius-sm); background:rgba(28,176,246,0.1); color:var(--secondary); display:flex; align-items:center; justify-content:center; margin-bottom:1.25rem;">
+                                        <i class="ph-fill ph-brackets-angle" style="font-size:1.8rem;"></i>
+                                    </div>
+                                    <h3 style="font-size:1.3rem; margin-bottom:0.5rem; color:var(--text-dark);">Dil Bilgisi</h3>
+                                    <p style="color:var(--text-muted); font-size:0.95rem; font-weight:500; line-height:1.4;">Zamanlar, edatlar ve cümle yapısı üzerine meydan okumalarla gramer ustası ol.</p>
+                                </div>
+                                <div class="quiz-card-footer">
+                                    <span class="quiz-difficulty-badge tag" style="font-size:0.8rem; padding:4px 10px; font-weight:800; background:var(--accent);">YÜKLENİYOR...</span>
+                                    <button class="btn btn-3d primary" style="font-size:0.8rem; padding:8px 16px; text-transform:none; margin:0;">Başla</button>
+                                </div>
+                            </div>
+
+                            <!-- Kart 3: Günlük Pratik -->
+                            <div class="quiz-select-card panel hover-lift" data-category="practice">
+                                <div>
+                                    <div style="width:50px; height:50px; border-radius:var(--radius-sm); background:rgba(88,204,2,0.1); color:var(--success); display:flex; align-items:center; justify-content:center; margin-bottom:1.25rem;">
+                                        <i class="ph-fill ph-chats-teardrop" style="font-size:1.8rem;"></i>
+                                    </div>
+                                    <h3 style="font-size:1.3rem; margin-bottom:0.5rem; color:var(--text-dark);">Günlük Pratik</h3>
+                                    <p style="color:var(--text-muted); font-size:0.95rem; font-weight:500; line-height:1.4;">Sosyal ortamlarda, seyahatte ve günlük hayatta kullanılan kalıpları deneyimle.</p>
+                                </div>
+                                <div class="quiz-card-footer">
+                                    <span class="quiz-difficulty-badge tag" style="font-size:0.8rem; padding:4px 10px; font-weight:800; background:var(--accent);">YÜKLENİYOR...</span>
+                                    <button class="btn btn-3d primary" style="font-size:0.8rem; padding:8px 16px; text-transform:none; margin:0;">Başla</button>
+                                </div>
+                            </div>
+
+                            <!-- Kart 4: Kültür Kâşifi -->
+                            <div class="quiz-select-card panel hover-lift" data-category="culture">
+                                <div>
+                                    <div style="width:50px; height:50px; border-radius:var(--radius-sm); background:rgba(255,75,75,0.1); color:var(--danger); display:flex; align-items:center; justify-content:center; margin-bottom:1.25rem;">
+                                        <i class="ph-fill ph-globe" style="font-size:1.8rem;"></i>
+                                    </div>
+                                    <h3 style="font-size:1.3rem; margin-bottom:0.5rem; color:var(--text-dark);">Kültür Kâşifi</h3>
+                                    <p style="color:var(--text-muted); font-size:0.95rem; font-weight:500; line-height:1.4;">Öğrendiğin dilin kültürüne, geleneklerine ve ilginç detaylarına dair genel kültür testi.</p>
+                                </div>
+                                <div class="quiz-card-footer">
+                                    <span class="quiz-difficulty-badge tag" style="font-size:0.8rem; padding:4px 10px; font-weight:800; background:var(--accent);">YÜKLENİYOR...</span>
+                                    <button class="btn btn-3d primary" style="font-size:0.8rem; padding:8px 16px; text-transform:none; margin:0;">Başla</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aktif Quiz Paneli -->
+                    <div id="quiz-active-panel" class="hidden panel" style="max-width:700px; margin:0 auto; padding:2.5rem; position:relative; overflow:hidden;">
+                        <!-- Üst Bilgi Barı: Progress ve Canlar -->
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; gap:1.5rem;">
+                            <!-- Progress Bar -->
+                            <div style="flex:1; display:flex; align-items:center; gap:1rem;">
+                                <div class="progress-track" style="height:12px; margin:0;">
+                                    <div id="quiz-progress-fill" class="progress-fill" style="width:0%;"></div>
+                                </div>
+                                <span id="quiz-progress-text" style="font-weight:800; font-size:0.95rem; color:var(--text-muted); min-width:40px; text-align:right;">1 / 5</span>
+                            </div>
+                            <!-- Canlar -->
+                            <div id="quiz-hearts" style="display:flex; gap:0.4rem; font-size:1.5rem; color:var(--danger);">
+                                <i class="ph-fill ph-heart"></i>
+                                <i class="ph-fill ph-heart"></i>
+                                <i class="ph-fill ph-heart"></i>
+                            </div>
+                        </div>
+
+                        <!-- Soru İçeriği -->
+                        <div id="quiz-question-container" style="min-height:220px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+                            <span id="quiz-question-type-badge" class="tag" style="background:rgba(0,119,182,0.1); color:var(--primary); font-size:0.8rem; margin-bottom:1rem; border:none; padding:4px 12px;">Çoktan Seçmeli</span>
+                            <h2 id="quiz-question-text" style="font-size:1.6rem; font-weight:800; line-height:1.4; color:var(--text-dark); margin-bottom:2rem; max-width:600px;">Soru buraya gelecek...</h2>
+                            
+                            <!-- İnteraktif Cevap Alanı -->
+                            <div id="quiz-answer-area" style="width:100%; max-width:550px;">
+                                <!-- Dinamik olarak JS tarafından doldurulacak -->
+                            </div>
+                        </div>
+
+                        <!-- Alt Kontrol / Geri Bildirim Alanı -->
+                        <div id="quiz-footer" style="margin-top:2.5rem; display:flex; justify-content:space-between; align-items:center; border-top:2px solid var(--border-color); padding-top:1.5rem; flex-wrap:wrap; gap:1rem;">
+                            <button id="btn-quiz-exit" class="btn btn-3d secondary" style="font-size:0.95rem; padding:12px 20px;">Vazgeç</button>
+                            <button id="btn-quiz-check" class="btn btn-3d primary" style="font-size:0.95rem; padding:12px 30px;" disabled>Kontrol Et</button>
+                        </div>
+
+                        <!-- Slide-up Geri Bildirim Kutusu (Duolingo Style) -->
+                        <div id="quiz-feedback-banner" class="hidden" style="position:absolute; bottom:0; left:0; right:0; padding:1.5rem 2.5rem; display:flex; align-items:center; justify-content:space-between; border-top: 4px solid transparent; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index:10; transform:translateY(100%);">
+                            <div style="display:flex; align-items:center; gap:1.25rem;">
+                                <div id="quiz-feedback-icon" style="width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.8rem;">
+                                    <i class="ph-fill ph-check-circle"></i>
+                                </div>
+                                <div>
+                                    <h4 id="quiz-feedback-title" style="font-size:1.25rem; font-weight:800; margin:0;">Tebrikler!</h4>
+                                    <p id="quiz-feedback-message" style="font-size:0.95rem; font-weight:600; margin:0; opacity:0.9;"></p>
+                                </div>
+                            </div>
+                            <button id="btn-quiz-continue" class="btn btn-3d" style="font-size:0.95rem; padding:12px 24px; color:white;">Devam Et</button>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Sonuç Paneli -->
+                    <div id="quiz-result-panel" class="hidden panel" style="max-width:500px; margin:0 auto; text-align:center; padding:3rem 2rem;">
+                        <div id="quiz-result-confetti" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:hidden; z-index:1;"></div>
+                        <div class="bounce-in" style="position:relative; z-index:2;">
+                            <div id="quiz-result-icon-container" style="width:100px; height:100px; border-radius:50%; background:rgba(88,204,2,0.1); color:var(--success); display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem;">
+                                <i class="ph-fill ph-trophy" style="font-size:4rem;"></i>
+                            </div>
+                            <h2 id="quiz-result-title" style="font-size:2.2rem; font-weight:900; margin-bottom:0.5rem; color:var(--text-dark);">Harika İş çıkardın!</h2>
+                            <p id="quiz-result-desc" style="color:var(--text-muted); font-size:1.1rem; font-weight:600; margin-bottom:2rem; line-height:1.5;">Tüm soruları tamamladın ve harika bir performans gösterdin!</p>
+                            
+                            <!-- Skor Kartları -->
+                            <div style="display:flex; justify-content:center; gap:1.5rem; margin-bottom:2.5rem;">
+                                <div class="panel" style="padding:1rem 1.5rem; flex:1; border-color:var(--border-color); background:var(--bg-main);">
+                                    <span style="font-size:0.85rem; font-weight:800; text-transform:uppercase; color:var(--text-muted);">Kazanılan XP</span>
+                                    <span id="quiz-result-xp" style="display:block; font-size:2rem; font-weight:900; color:var(--primary); margin-top:0.25rem;">+50</span>
+                                </div>
+                                <div class="panel" style="padding:1rem 1.5rem; flex:1; border-color:var(--border-color); background:var(--bg-main);">
+                                    <span style="font-size:0.85rem; font-weight:800; text-transform:uppercase; color:var(--text-muted);">Doğruluk</span>
+                                    <span id="quiz-result-accuracy" style="display:block; font-size:2rem; font-weight:900; color:var(--secondary); margin-top:0.25rem;">100%</span>
+                                </div>
+                            </div>
+
+                            <!-- Seviye Yükseldi Bildirimi (Gizlenebilir) -->
+                            <div id="quiz-level-up-card" class="hidden panel glow-card" style="margin-bottom:2.5rem; border-color:var(--success); background:rgba(88,204,2,0.05); padding:1.5rem; animation: jiggle 0.6s ease;">
+                                <div style="display:flex; align-items:center; justify-content:center; gap:0.75rem; color:var(--success); font-size:1.5rem; font-weight:900; margin-bottom:0.5rem;">
+                                    <i class="ph-fill ph-sparkles"></i> SEVİYE YÜKSELDİ! <i class="ph-fill ph-sparkles"></i>
+                                </div>
+                                <p style="font-weight:700; color:var(--text-dark); margin:0;">Tebrikler, dil seviyen artık <span id="quiz-result-level-badge" class="tag" style="background:var(--success); color:white; border:none; font-size:1rem; padding:4px 12px; margin-left:0.5rem;">B2</span>!</p>
+                            </div>
+
+                            <div style="display:flex; flex-direction:column; gap:1rem;">
+                                <button id="btn-quiz-retry" class="btn btn-3d primary full-width" style="padding:14px; font-size:1.1rem;">Tekrar Dene</button>
+                                <button id="btn-quiz-back" class="btn btn-3d secondary full-width" style="padding:14px; font-size:1.1rem;">Menüye Dön</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Arama Sonuçları -->
+                <section id="search-view" class="main-view hidden"
+                    style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%;">
+                    <div class="view-header" style="text-align: center; margin-bottom: 2rem; width: 100%;">
+                        <h2 id="search-title" style="color: var(--primary);">Arama Sonuçları</h2>
+                        <p style="color: var(--text-muted);">Aramana uyan sonuçlar listelendi.</p>
+                    </div>
+                    <div class="panel" style="text-align: center; padding: 4rem; border: dashed 2px var(--border-color); max-width: 650px; width: 100%; box-sizing: border-box;">
+                        <i class="ph ph-magnifying-glass" style="font-size: 4rem; color: var(--primary); margin-bottom: 1rem; display: inline-block;"></i>
+                        <h3 style="font-size: 1.5rem; color: var(--text-dark);">Henüz Sonuç Yok</h3>
+                        <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500;">Denediğin kelime veya görev şu
+                            an kampüste bulunamadı.</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- YENİ GÖNDERİ MODAL -->
+        <div id="post-modal" class="modal hidden">
+            <div class="modal-content">
+                <header class="modal-header"
+                    style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="color:var(--primary);">Düşüncelerini Paylaş...</h3>
+                    <button class="close-modal btn btn-icon" style="padding:8px; border-radius:50%;"><i
+                            class="ph-bold ph-x"></i></button>
+                </header>
+                <form id="new-post-form">
+                    <div class="form-group">
+                        <textarea id="post-text" placeholder="Bugün neler hissettin?" rows="5" required
+                            style="resize:none;"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-3d primary full-width" style="padding:16px;">Paylaş
+                        gitsin!</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SEVİYE DEĞERLENDİRME FORMU MODAL -->
+        <div id="evaluation-modal" class="modal hidden">
+            <div class="modal-content" style="max-width: 500px;">
+                <header class="modal-header" style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="color:var(--primary); font-size: 1.5rem;">Seviye Değerlendirme Formu</h3>
+                    <button id="close-evaluation-modal" class="btn btn-icon" style="padding:8px; border-radius:50%;"><i class="ph-bold ph-x"></i></button>
+                </header>
+                <form id="evaluation-form">
+                    <div class="form-group" style="margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label for="eval-lang" style="font-weight: 700; color: var(--text-dark);">Öğrenmek İstediğiniz Dil:</label>
+                        <select id="eval-lang" style="width: 100%; padding: 12px; border-radius: var(--radius-sm); border: 2px solid var(--border-color); background: var(--bg-main); color: var(--text-dark); font-weight: 600; outline: none;" required>
+                            <option value="en">İngilizce (English)</option>
+                            <option value="es">İspanyolca (Español)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label for="eval-level" style="font-weight: 700; color: var(--text-dark);">Şu anki tahmin ettiğiniz seviyeniz:</label>
+                        <select id="eval-level" style="width: 100%; padding: 12px; border-radius: var(--radius-sm); border: 2px solid var(--border-color); background: var(--bg-main); color: var(--text-dark); font-weight: 600; outline: none;" required>
+                            <option value="A1">A1 - Başlangıç (Beginner)</option>
+                            <option value="A2">A2 - Temel (Elementary)</option>
+                            <option value="B1">B1 - Orta Seviye (Intermediate)</option>
+                            <option value="B2">B2 - Orta-Üst Seviye (Upper Intermediate)</option>
+                            <option value="C1">C1 - İleri Seviye (Advanced)</option>
+                            <option value="C2">C2 - Yetkin Seviye (Proficient)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <label style="font-weight: 700; color: var(--text-dark);">Kendinizde gördüğünüz becerileri seçin:</label>
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-weight: 500; font-size: 0.95rem; cursor: pointer; color: var(--text-dark);">
+                            <input type="checkbox" id="skill-1" style="width: 18px; height: 18px; border-radius: 4px; accent-color: var(--primary);"> Kelimeleri ve basit kalıpları kolayca anlayabiliyorum.
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-weight: 500; font-size: 0.95rem; cursor: pointer; color: var(--text-dark);">
+                            <input type="checkbox" id="skill-2" style="width: 18px; height: 18px; border-radius: 4px; accent-color: var(--primary);"> Günlük pratik diyaloglar gerçekleştirebiliyorum.
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-weight: 500; font-size: 0.95rem; cursor: pointer; color: var(--text-dark);">
+                            <input type="checkbox" id="skill-3" style="width: 18px; height: 18px; border-radius: 4px; accent-color: var(--primary);"> Okuduğum makale ve karmaşık metinleri analiz edebiliyorum.
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-weight: 500; font-size: 0.95rem; cursor: pointer; color: var(--text-dark);">
+                            <input type="checkbox" id="skill-4" style="width: 18px; height: 18px; border-radius: 4px; accent-color: var(--primary);"> Akıcı ve doğal bir şekilde uzun cümlelerle konuşabiliyorum.
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-3d primary full-width" style="padding:16px;">Seviyemi Değerlendir</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ŞİFREMİ UNUTTUM MODAL -->
+        <div id="forgot-password-modal" class="modal hidden">
+            <div class="modal-content" style="max-width: 420px;">
+                <header class="modal-header" style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="color:var(--primary); font-size: 1.35rem;">Şifremi Unuttum</h3>
+                    <button id="close-forgot-password-modal" class="btn btn-icon" style="padding:8px; border-radius:50%;"><i class="ph-bold ph-x"></i></button>
+                </header>
+                <form id="forgot-password-form">
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem; font-weight: 500; line-height: 1.4;">
+                        Hesabınızın e-posta adresini girin, size şifre sıfırlama bağlantısını gönderelim.
+                    </p>
+                    <div class="form-group" style="margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label for="forgot-email" style="font-weight: 700; color: var(--text-dark);">E-posta Adresi</label>
+                        <input type="email" id="forgot-email" placeholder="ornek@lingomatch.com" required style="width: 100%; padding: 12px; border-radius: var(--radius-sm); border: 2px solid var(--border-color); background: var(--bg-main); color: var(--text-dark); font-weight: 600; outline: none;">
+                    </div>
+                    <button type="submit" class="btn btn-3d primary full-width" style="padding:16px;">Şifre Sıfırlama E-postası Gönder</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- LINGOLANDINIZ MODAL (EŞLEŞME KUTLAMASI & KONFETİ) -->
+        <div id="lingo-modal" class="modal hidden" style="background-color: var(--modal-overlay); z-index: 9999;">
+            <div id="confetti-container"
+                style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:hidden; z-index:1;">
+            </div>
+
+            <div class="modal-content lingo-celebration"
+                style="position:relative; z-index:10; border: 4px solid var(--primary); background: var(--bg-main); text-align: center; display: flex; flex-direction: column; align-items: center;">
+                <div class="bounce-in">
+                    <h1 class="lingo-title" style="color:var(--primary); font-size:3.5rem;">LİNGOLANDINIZ!</h1>
+                    <p
+                        style="text-align:center; color: var(--secondary); font-weight: 700; margin-bottom:2rem; font-size:1.1rem;">
+                        Harika bir dil eşleşmesi gerçekleşti. Bağlantı kur!</p>
+                </div>
+                <div class="avatar large pop-avatar" id="lingo-partner-avatar"
+                    style="border:4px solid var(--secondary); border-radius: 30px; margin: 0 auto;">MP</div>
+                <h3 id="lingo-partner-name"
+                    style="text-align:center; margin-top:1.5rem; margin-bottom:1.5rem; font-size:2rem; color:var(--text-dark);">
+                    Maria P.</h3>
+                <button id="btn-start-chat" class="btn btn-3d primary full-width bounce-in"
+                    style="font-size:1.2rem; padding: 18px;">Sohbete Işınlan</button>
+            </div>
+        </div>
+
+        <!-- OYUNLAŞTIRMA BİLDİRİMİ -->
+        <div id="toast-notification" class="toast hidden">
+            <div class="toast-icon"><i class="ph-fill ph-check-circle" style="color:white; font-size: 2rem;"></i></div>
+            <div class="toast-body">
+                <h4 id="toast-title" style="margin-bottom:0.2rem;">Süper Başarı</h4>
+                <p id="toast-message" style="font-weight:600; font-size:1rem;">+20 XP Hesaba Yüklendi!</p>
+            </div>
+        </div>
+
+    </div>
+    <!-- LİNGOLANDINIZ KUTLAMA EKRANI (Full-Screen Fixed Modal) -->
+    <div id="lingo-greeting-overlay" class="lingo-greeting-overlay hidden">
+        <div id="lingo-confetti-container" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:9998;"></div>
+        <div class="lingo-greeting-card">
+            <h1 class="lingo-greeting-title">Lingolandınız</h1>
+            <p id="lingo-greeting-partner" style="font-size:1.1rem; font-weight:500; color:var(--text-muted); margin-bottom:2.5rem; text-align:center;"></p>
+            <button id="btn-start-convo" class="btn btn-3d primary" style="font-size:1.1rem; padding:16px 40px; box-shadow: 0 0 30px rgba(0,119,182,0.6); text-align:center; justify-content:center;">
+                Sohbete Işınlan
+            </button>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>
